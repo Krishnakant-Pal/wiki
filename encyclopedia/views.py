@@ -1,7 +1,9 @@
-from django.shortcuts import render
-from . import util
-
+from django.shortcuts import render,redirect
+from . import util,form
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from django.http import HttpResponse
+
 
 def index(request):
     """
@@ -9,7 +11,8 @@ def index(request):
     """
 
     return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries()
+        "entries": util.list_entries(),
+        "form": form.NewSearchForm()
     })
 
 def entry_page(request,title):
@@ -23,11 +26,52 @@ def entry_page(request,title):
     if entries:
         return render(request, "encyclopedia/entry_page.html",{
             "title": title.capitalize(),
-            "entries": entries
+            "entries": entries,
+            "form": form.NewSearchForm()
             
         })
     # display error page if entry does not exist
     else: 
         return render(request, "encyclopedia/error.html",{
-            "title": title
+            "title": title,
+            "form": form.NewSearchForm()
         })
+
+
+def get_search_query(request):
+    """
+    Get the search query and return the entry page if exists else search the matching entries and display the results
+    """
+    if request.method == "POST":
+        search_form = form.NewSearchForm(request.POST)
+
+        if search_form.is_valid():
+            title = search_form.cleaned_data["title"].lower()
+            entries = util.list_entries()
+            entries_lower = [entry.lower() for entry in entries]
+
+            # when entry exists return entry page
+            if title in entries_lower:
+                return entry_page(request, title)
+                
+            else:
+                # shows the matching entries
+                matching_entries = []
+                for entry in entries:
+                    if title in entry.lower():
+                        matching_entries.append(entry)
+
+                # return all the matching entries if found
+                if len(matching_entries) :
+                    return render(request, "encyclopedia/title_search_result.html",{
+                        "matching_entries": matching_entries,
+                        "form": form.NewSearchForm()
+                        })
+                # else return the error page
+                else:  
+                    return entry_page(request, title)
+                
+    return render(request, "encyclopedia/title_search_result.html",{
+        "form": form.NewSearchForm()
+        })
+    

@@ -75,3 +75,33 @@ def get_search_query(request):
         "form": form.NewSearchForm()
         })
     
+
+def new_entry_page(request):
+    if request.method == "POST":
+        new_entry_page = form.NewEntryForm(request.POST)
+
+        if new_entry_page.is_valid():
+            title = new_entry_page.cleaned_data['new_title']
+            content = new_entry_page.cleaned_data['content']
+            all_present_entries = util.list_entries()
+
+            if title.lower() in all_present_entries:
+                print(title)
+                return render(request, "encyclopedia/new_entry_page.html",{
+                        "new_entry_form": form.NewEntryForm(),
+                        "form": form.NewSearchForm(),
+                        "error": True,
+                        "title": title,
+                                    })
+            # if entry does not exits then save
+            else: 
+                util.save_entry(title=title,content=content)
+                print("Entry saved")
+                return redirect(reverse("wiki:title", args = [title]))
+
+
+    return render(request, "encyclopedia/new_entry_page.html",{
+        "new_entry_form" : form.NewEntryForm(),
+        "form": form.NewSearchForm(),
+        "error": False,
+    })

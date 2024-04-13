@@ -1,0 +1,38 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    New Entry
+    
+    
+{% endblock %}
+{% block nav %}
+    
+
+<style> 
+    #id_new_title , #id_content{
+        width: 60%;
+    }
+    #head {
+        color: blue;
+    }
+ </style>
+{% endblock %}
+{% block body %}
+    {% if  error   %}
+    <div class="alert alert-danger" role="alert">
+        Title '{{title}}' already exists
+      </div>
+    {% endif %}
+
+    <div id = "head"> 
+        <h4> New entry page </h4>
+    </div>
+<br> 
+    <form action="{% url 'wiki:new_entry' %}"  method="POST">   
+        {% csrf_token %}
+        {{ new_entry_form.as_p }}
+        <br>
+        <input type="submit" value="submit"> </input>
+    </form>
+ 
+{% endblock %}

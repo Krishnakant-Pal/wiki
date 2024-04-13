@@ -77,6 +77,7 @@ def get_search_query(request):
     
 
 def new_entry_page(request):
+    """Lets users to create a new entry"""
     if request.method == "POST":
         new_entry_page = form.NewEntryForm(request.POST)
 
@@ -88,7 +89,7 @@ def new_entry_page(request):
             if title.lower() in all_present_entries:
                 print(title)
                 return render(request, "encyclopedia/new_entry_page.html",{
-                        "new_entry_form": form.NewEntryForm(),
+                        "new_entry_form": new_entry_page,
                         "form": form.NewSearchForm(),
                         "error": True,
                         "title": title,

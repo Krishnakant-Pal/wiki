@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.http import HttpResponse
 import random 
 
+from markdown2 import Markdown
 
 def index(request):
     """
@@ -23,13 +24,16 @@ def entry_page(request,title):
     # Get the entry 
     entries = util.get_entry(title)
     
+    # Converts entries to HTML entities
+    markdowner = Markdown()
+    entries_html = markdowner.convert(entries)
+    
     # display entry page if entry exists
     if entries:
         return render(request, "encyclopedia/entry_page.html",{
             "title": title.capitalize(),
-            "entries": entries,
-            "form": form.NewSearchForm()
-            
+            "entries": entries_html,
+            "form": form.NewSearchForm()   
         })
     # display error page if entry does not exist
     else: 
@@ -37,7 +41,6 @@ def entry_page(request,title):
             "title": title,
             "form": form.NewSearchForm()
         })
-
 
 def get_search_query(request):
     """
@@ -133,7 +136,7 @@ def edit_entry(request,title):
 
 def random_entry(request):
     """Takes user to a random encyclopedia entry page"""
-    
+
     # Takes all the available titles and chose randomly and returns
     titles = util.list_entries()
     title = random.choice(titles)

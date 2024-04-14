@@ -80,14 +80,13 @@ def new_entry_page(request):
     """Lets users to create a new entry"""
     if request.method == "POST":
         new_entry_page = form.NewEntryForm(request.POST)
-
+        # Validate form if title already exists then display error and return form
         if new_entry_page.is_valid():
             title = new_entry_page.cleaned_data['new_title']
             content = new_entry_page.cleaned_data['content']
             all_present_entries = util.list_entries()
 
             if title.lower() in all_present_entries:
-                print(title)
                 return render(request, "encyclopedia/new_entry_page.html",{
                         "new_entry_form": new_entry_page,
                         "form": form.NewSearchForm(),
@@ -97,7 +96,6 @@ def new_entry_page(request):
             # if entry does not exits then save
             else: 
                 util.save_entry(title=title,content=content)
-                print("Entry saved")
                 return redirect(reverse("wiki:title", args = [title]))
 
 

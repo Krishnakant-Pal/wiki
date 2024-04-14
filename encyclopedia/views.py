@@ -3,6 +3,7 @@ from . import util,form
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.http import HttpResponse
+import random 
 
 
 def index(request):
@@ -130,4 +131,12 @@ def edit_entry(request,title):
                 "title": title,
             })
 
+def random_entry(request):
+    """Takes user to a random encyclopedia entry page"""
+    
+    # Takes all the available titles and chose randomly and returns
+    titles = util.list_entries()
+    title = random.choice(titles)
+    
+    return redirect(reverse("wiki:title", args = [title]))
     

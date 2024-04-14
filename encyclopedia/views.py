@@ -104,3 +104,30 @@ def new_entry_page(request):
         "form": form.NewSearchForm(),
         "error": False,
     })
+
+
+def edit_entry(request,title):
+    """
+    Let users edit the entry
+    """
+    # if entry is edited then save  
+    if request.method == "POST":
+        edited_entry = form.EditEntryForm(request.POST)
+        if edited_entry.is_valid():
+            title = edited_entry.cleaned_data['title']
+            content = edited_entry.cleaned_data["content"]
+            
+            util.save_entry(title=title,content=content)
+            return redirect(reverse("wiki:title", args = [title]))
+        
+    # else load content into form to edit and render it
+    content = util.get_entry(title)
+    edit_entry_form = form.EditEntryForm(initial={'title': title, 'content':content})
+
+    return render(request, "encyclopedia/edit_entry_page.html",{
+                "edit_entry_form" : edit_entry_form,
+                "form": form.NewSearchForm(),
+                "title": title,
+            })
+
+    

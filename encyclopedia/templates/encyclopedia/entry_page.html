@@ -7,6 +7,6 @@
 
 {% block body %}
 
-    <a class="btn btn-primary" href="{% url 'wiki:edit_entry' title %}"{{ title }}>Edit this page</a>
+    <a class="btn btn-primary right-corner-button" href="{% url 'wiki:edit_entry' title %}"{{ title }}>Edit this page</a>
     <div>{{entries|safe}} </div>
 {% endblock %}

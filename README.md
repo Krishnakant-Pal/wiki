@@ -2,12 +2,11 @@
 
 Description: A encyclopedia like website where you can create wikipedia articles.It uses github markdown syntax to to write contains of the articles.
 
+![Image 1](media\image-1.png?raw=true) 
 
-![alt text](media\image-1.png)
+![Image 2](media\image-2.png?raw=true)
 
-![alt text](media\image-2.png)
-
-![alt text](media\image-3.png)
+![Image 3](media\image-3.png?raw=true)
 
 ### Features
 * Search articles
